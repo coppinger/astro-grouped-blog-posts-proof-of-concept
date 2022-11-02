@@ -83,12 +83,12 @@ console.log(datePostsArray);
     <Header />
     <main>
       <section>
-        <ul>
-          {
-            groupedPosts.map((month, index) => {
-              return (
-                <Fragment>
-                  <h1>{datePostsArray[index]}</h1>
+        {
+          groupedPosts.map((month, index) => {
+            return (
+              <Fragment>
+                <h3>{datePostsArray[index]}</h3>
+                <ul>
                   {month.map((post) => {
                     return (
                       <li>
@@ -96,20 +96,19 @@ console.log(datePostsArray);
                           {new Date(
                             post.frontmatter.pubDate
                           ).toLocaleDateString("en-us", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
+                            month: "long",
+                            day: "2-digit",
                           })}
                         </time>
                         <a href={post.url}>{post.frontmatter.title}</a>
                       </li>
                     );
                   })}
-                </Fragment>
-              );
-            })
-          }
-        </ul>
+                </ul>
+              </Fragment>
+            );
+          })
+        }
       </section>
     </main>
     <Footer />
