@@ -1,6 +1,10 @@
 # Group blog posts by month & year in Astro!
 
-This is a feature I wanted to implement on my blog.
+Group up posts by the month (and year) they were posted in!
+
+**Example**:
+
+![An example of what this does](./group-blog-posts-example.png)
 
 Along with the help of a few excellent folk listed below, we made it happen!
 
