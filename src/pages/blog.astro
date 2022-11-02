@@ -1,0 +1,117 @@
+---
+// @ts-nocheck
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
+import { log } from "astro/dist/core/logger/core";
+
+// Use Astro.glob() to fetch all posts, and then sort them by date.
+const posts = (await Astro.glob("./blog/*.{md,mdx}")).sort(
+  (a, b) =>
+    new Date(b.frontmatter.pubDate).valueOf() -
+    new Date(a.frontmatter.pubDate).valueOf()
+);
+
+const datePostsArray = [];
+
+posts.forEach((post) => {
+  let isMonthAdded = false;
+
+  let postMonth = new Date(post.frontmatter.pubDate).toLocaleDateString(
+    "en-us",
+    {
+      month: "long",
+      year: "numeric",
+    }
+  );
+
+  if (datePostsArray.length === 0) {
+    datePostsArray.push(postMonth);
+  }
+
+  for (let i = 0; i < datePostsArray.length; i++) {
+    if (datePostsArray[i] === postMonth) {
+      isMonthAdded = true;
+    }
+  }
+  if (isMonthAdded === false) {
+    datePostsArray.push(postMonth);
+  }
+});
+
+const groupedPosts = datePostsArray.map((month) => {
+  return posts.filter((post) => {
+    return (
+      month ===
+      new Date(post.frontmatter.pubDate).toLocaleDateString("en-us", {
+        month: "long",
+        year: "numeric",
+      })
+    );
+  });
+});
+
+console.log(groupedPosts);
+
+console.log(datePostsArray);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style>
+      ul {
+        list-style-type: none;
+        padding: unset;
+      }
+      ul li {
+        display: flex;
+      }
+      ul li time {
+        flex: 0 0 130px;
+        font-style: italic;
+        color: #595959;
+      }
+      ul li a:visited {
+        color: #8e32dc;
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section>
+        <ul>
+          {
+            groupedPosts.map((month, index) => {
+              return (
+                <Fragment>
+                  <h1>{datePostsArray[index]}</h1>
+                  {month.map((post) => {
+                    return (
+                      <li>
+                        <time datetime={post.frontmatter.pubDate}>
+                          {new Date(
+                            post.frontmatter.pubDate
+                          ).toLocaleDateString("en-us", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </time>
+                        <a href={post.url}>{post.frontmatter.title}</a>
+                      </li>
+                    );
+                  })}
+                </Fragment>
+              );
+            })
+          }
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>
